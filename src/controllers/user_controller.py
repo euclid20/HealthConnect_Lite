@@ -70,3 +70,19 @@ def store_user(user_data: UserEntity):
         # If there's an error, rollback the transaction
         db.session.rollback()
         return jsonify({'error': f'Failed to create user: {str(e)}'}), 500
+
+
+def delete_user(user_id):
+    # Retrieve the user from the database
+    user_to_delete = User.query.get(user_id)
+    if user_to_delete:
+        # Delete the user from the database
+        try:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            return jsonify({'message': 'User deleted successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': f'Failed to delete user: {str(e)}'}), 500
+    else:
+        return jsonify({'message': 'User not found'}), 404
