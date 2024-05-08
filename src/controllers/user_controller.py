@@ -37,6 +37,27 @@ def get_specific_user(user_id: int):
         return jsonify({"message": "User not found"})
 
 
+def update_user(user_id, user: UserEntity):
+    # Retrieve the user from the database
+    user_to_update = User.query.get(user_id)
+    if user_to_update:
+        # Update the user's attributes with the new data
+        user_to_update.email = user.email
+        user_to_update.first_name = user.first_name
+        user_to_update.last_name = user.last_name
+
+        # Commit the changes to the database
+        try:
+            db.session.commit()
+            return jsonify({'message': 'User updated successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': f'Failed to update user: {str(e)}'}), 500
+    else:
+        return jsonify({'message': 'User not found'}), 404
+
+
+
 def store_user(user_data: UserEntity):
     new_user = User(email=user_data.email, first_name=user_data.first_name, last_name=user_data.last_name, avatar=user_data.avatar)
     db.session.add(new_user)

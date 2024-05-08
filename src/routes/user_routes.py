@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, request, jsonify
-from controllers.user_controller import get_users, store_user, get_specific_user
+from controllers.user_controller import get_users, store_user, get_specific_user, update_user
 from entities.user_entity import UserEntity
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user')
@@ -12,6 +12,7 @@ def get_users_route():
 @user_blueprint.route('/<int:user_id>', methods=['GET'])
 def get_specific_user_route(user_id):
     return get_specific_user(user_id)
+
 
 @user_blueprint.route('/', methods=['POST'])
 def store_user_route():
@@ -48,3 +49,26 @@ def store_user_route():
     # Call the controller function to store the user
     return store_user(user_data)
 
+@user_blueprint.route('/', methods=['PUT'])
+def update_user_route():
+
+    # Check if the request contains form data
+    if not request.form:
+        return jsonify({'message': 'Unprocessable content', 'error': 'No data provided'}), 422
+
+    user_id = request.form.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'Unprocessable content', 'error': 'user_id is not defined as payload'}), 422
+
+    # Get other form fields
+    email = request.form.get('email')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+
+    if not (email and first_name and last_name):
+        return jsonify({'message': 'Unprocessable content', 'error': 'Missing required fields'}), 422
+    
+    user = UserEntity(email, first_name, last_name)
+
+    # Call the controller function to update the user
+    return update_user(user_id, user)
