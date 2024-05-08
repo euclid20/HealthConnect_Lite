@@ -57,8 +57,16 @@ def update_user(user_id, user: UserEntity):
         return jsonify({'message': 'User not found'}), 404
 
 
-
 def store_user(user_data: UserEntity):
+
+    if user_data.id is not None:
+        existing_user = User.query.filter_by(id=user_data.id).first()
+        if existing_user:
+            return jsonify({'message': 'User already exists. Data has been saved.'}), 200
+
+
+
+    # If the user does not exist, create a new user
     new_user = User(email=user_data.email, first_name=user_data.first_name, last_name=user_data.last_name, avatar=user_data.avatar)
     db.session.add(new_user)
 
@@ -70,7 +78,6 @@ def store_user(user_data: UserEntity):
         # If there's an error, rollback the transaction
         db.session.rollback()
         return jsonify({'error': f'Failed to create user: {str(e)}'}), 500
-
 
 def delete_user(user_id):
     # Retrieve the user from the database

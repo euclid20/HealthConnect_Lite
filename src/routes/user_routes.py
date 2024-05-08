@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from controllers.user_controller import get_users, store_user, get_specific_user, update_user, delete_user
 from entities.user_entity import UserEntity
 from dotenv import load_dotenv
-
+import requests
 load_dotenv()
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user')
@@ -98,3 +98,40 @@ def delete_user_route():
         return jsonify({'message': 'Unprocessable content', 'error': 'user_id is not defined as payload'}), 422
     
     return delete_user(user_id)
+
+@user_blueprint.route('/fetch', methods=['GET'])
+def fetching_user():
+    # Check if the 'page' parameter is included in the request
+    page = request.args.get('page')
+    if not page:
+        return jsonify({'message': 'Bad request', 'error': 'Missing parameter: page'}), 400
+    
+    # Make a GET request to the API endpoint
+    api_url = f"https://reqres.in/api/users?page={page}"
+    response = requests.get(api_url)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse the JSON response
+        data = response.json()
+        
+        # Iterate over each user in the 'data' property
+        for user_data in data['data']:
+            # Extract user data
+
+            user_id = user_data['id']
+            avatar = user_data['avatar']
+            email = user_data['email']
+            first_name = user_data['first_name']
+            last_name = user_data['last_name']
+            
+            # Create UserEntity instance
+            user_entity = UserEntity(id=user_id, avatar=avatar, email=email, first_name=first_name, last_name=last_name)
+            
+            # Store the user in the database
+            store_user(user_entity)
+        
+        return jsonify({'message': 'Users stored successfully'}), 200
+    else:
+        # If the request was not successful, return an error message
+        return jsonify({'message': 'Failed to fetch data from the API'}), response.status_code
