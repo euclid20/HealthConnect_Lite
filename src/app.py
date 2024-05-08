@@ -21,5 +21,6 @@ def create_users_table():
 # Register Routes
 app.register_blueprint(user_blueprint)
 
+# Run only if the app.py is triggered direcly ( or app.py as the entry point of application )
 if __name__ == "__main__":
     app.run(debug=True)
