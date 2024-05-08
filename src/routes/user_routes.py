@@ -2,6 +2,9 @@ import os
 from flask import Blueprint, request, jsonify
 from controllers.user_controller import get_users, store_user, get_specific_user, update_user, delete_user
 from entities.user_entity import UserEntity
+from dotenv import load_dotenv
+
+load_dotenv()
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user')
 
@@ -76,7 +79,17 @@ def update_user_route():
 @user_blueprint.route('/', methods=['DELETE'])
 def delete_user_route():
 
-     # Check if the request contains form data
+    # Header validation
+    if not request.headers.get('Authorization'):
+        return jsonify({'message': 'Unauthorized', 'error': 'You are not allowed to delete user'}), 403
+
+
+    authorization_header = request.headers.get('Authorization')
+
+    if authorization_header != os.getenv("AUTHORIZATION_KEY"):
+        return jsonify({'message': 'Forbidden, failed key', 'error': 'You are not allowed to delete user'}), 403
+
+    # Check if the request contains form data
     if not request.form:
         return jsonify({'message': 'Unprocessable content', 'error': 'No data provided'}), 422
     
