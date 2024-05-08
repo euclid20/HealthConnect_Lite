@@ -28,8 +28,9 @@ def get_specific_user(user_id: int):
         # Serialize the user and return it
         serialized_user = {
             "id": user.id,
+            "username" : f'{user.first_name}{user.last_name}'.lower(),
             "avatar": user.avatar,
-            "email": user.email
+            "email": user.email,
         }
         return jsonify(serialized_user)
     else:
