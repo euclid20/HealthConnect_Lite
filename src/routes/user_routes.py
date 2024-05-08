@@ -11,12 +11,5 @@ def get_users_route():
 
 @user_blueprint.route('/', methods=['POST'])
 def store_user_route():
-    user = User(
-        id=1,
-        email="faidfadjri@gmail.com",
-        first_name="faid",
-        last_name="fadjri",
-        avatar="avatar"
-    )
-    return store_user(user)
+    return store_user()
 
