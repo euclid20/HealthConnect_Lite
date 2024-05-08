@@ -1,5 +1,5 @@
 run:
-	flask run --debug
+	flask --app src/app run
 
 venv:
 	.venv/Scripts/activate
