@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 
-from controllers.user_controller import get_users
-from models.user_model import User
-from config.setup import db
+from controllers.user_controller import get_users, store_user
+from entities.user_entity import UserEntity
+
 
 user_blueprint = Blueprint('user', __name__, url_prefix='/user');
 
@@ -30,15 +30,7 @@ def store_user_route():
     first_name = form['first_name']
     last_name = form['last_name']
     avatar = form['avatar']
-    
-    new_user = User(email=email, first_name=first_name, last_name=last_name, avatar=avatar)
-    db.session.add(new_user)
 
-    try:
-        # Commit the transaction to save the new user to the database
-        db.session.commit()
-        return jsonify({'message': 'User created successfully'}), 201
-    except Exception as e:
-        # If there's an error, rollback the transaction
-        db.session.rollback()
-        return jsonify({'error': f'Failed to create user: {str(e)}'}), 500
+    # Create UserEntity instance
+    user_data = UserEntity(avatar=avatar, email=email, first_name=first_name, last_name=last_name)
+    return store_user(user_data)   
