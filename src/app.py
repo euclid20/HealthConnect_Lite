@@ -3,13 +3,14 @@ import os
 from dotenv import load_dotenv
 from flask import Flask
 
+from config.setup import create_app
 from routes.user_routes import user_blueprint
 
 # Load environment variables from .env file
-load_dotenv() 
+load_dotenv()
 
 # Define flask application
-app = Flask(__name__)
+app = create_app(os.getenv("CONFIG_MODE"))
 
 # Define route for creating the users table
 @app.route("/")
