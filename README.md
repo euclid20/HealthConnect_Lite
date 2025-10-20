@@ -1,0 +1,1 @@
+HealthConnect Lite is a lightweight backend API built with Flask and MySQL. It enables secure user registration and clinic management with real-world validation and error handling. Designed for bootcamp submission and future expansion into health tracking or SDG-aligned features.
