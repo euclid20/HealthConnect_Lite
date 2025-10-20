@@ -1,8 +1,8 @@
 from flask import jsonify
 
-from models.user_model import User
-from entities.user_entity import UserEntity
-from config.setup import db
+from src.models.user_model import User
+from src.entities.user_entity import UserEntity
+from src.config.setup import db
 
 
 def get_users():

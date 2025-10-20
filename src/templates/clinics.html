@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clinics</title>
+</head>
+<body>
+    <h1>Available Clinics</h1>
+    <ul>
+        {% for clinic in clinics %}
+            <li><strong>{{ clinic.name }}</strong> — {{ clinic.location }} — {{ clinic.contact }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
